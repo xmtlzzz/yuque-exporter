@@ -24,5 +24,5 @@ https://github.com/atian25/yuque-exporter
 npm install
 
 # 运行
-set YUQUE_TOKEN=QBAJjfRfibUgFsdla6EgxRfbwc5SQdFuT7NDRJII&& npm run start:dev 
+set YUQUE_TOKEN=<your token>&& npm run start:dev 
 ```
