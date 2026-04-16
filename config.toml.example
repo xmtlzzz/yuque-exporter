@@ -1,0 +1,23 @@
+# 语雀导出工具配置文件
+# 复制此文件为 config.toml 并填入你的配置
+
+[yuque]
+# 语雀 host，默认无需修改
+host = "https://www.yuque.com"
+
+# 语雀 token (可选，优先使用环境变量 YUQUE_TOKEN)
+# token = "your-token-here"
+
+# 输出目录
+outputDir = "./storage"
+
+# 是否清空输出目录
+clean = false
+
+# 要导出的仓库列表
+[yuque.target]
+repos = [
+  "atian25/blog",
+  # 添加更多仓库，例如:
+  # "your-name/your-repo",
+]

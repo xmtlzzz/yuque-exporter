@@ -2,31 +2,39 @@ import { fileURLToPath } from 'url';
 
 import { build } from './lib/builder.js';
 import { crawl } from './lib/crawler.js';
-import { config } from './config.js';
+import { config, loadConfig } from './config.js';
 
 interface StartOptions {
-  urlPaths?: string[];
+  repos?: string[];
   options?: Partial<typeof config>;
 }
 
-export async function start({ urlPaths, options }: StartOptions = {}) {
-  // set config
-  Object.assign(config, options);
+export async function start({ repos, options }: StartOptions = {}) {
+  const loaded = await loadConfig();
+  
+  if (options) {
+    Object.assign(config, options);
+  }
+  
+  const urlPaths = repos || config.target.repos;
+  
+  if (!urlPaths || urlPaths.length === 0) {
+    console.log('No repos configured. Please add repos to config.toml or pass via CLI.');
+    console.log('Example config.toml:');
+    console.log(`
+[target]
+repos = ["atian25/blog", "your-name/other-repo"]
+    `);
+    return;
+  }
 
-  // crawl yuque data
   await crawl(urlPaths);
-
-  // process yuque data
-  await build(urlPaths);
+  await build();
 }
 
-// Determining if an ESM module is main then run the code
 if (import.meta.url.startsWith('file:')) {
   const modulePath = fileURLToPath(import.meta.url);
   if (process.argv[1] === modulePath) {
-    const urlPaths = [
-      'atian25/blog',
-    ];
-    await start({ urlPaths });
+    await start();
   }
 }
