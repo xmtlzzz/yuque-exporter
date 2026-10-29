@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "语雀导出",
+  "version": "1.0.1",
+  "identifier": "com.yuque.exporter",
+  "build": {
+    "frontendDist": "../src-tauri/frontend"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "语雀导出",
+        "width": 1040,
+        "height": 760,
+        "minWidth": 720,
+        "minHeight": 560,
+        "resizable": true,
+        "center": true,
+        "decorations": true,
+        "theme": "Dark"
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.ico"
+    ],
+    "externalBin": [
+      "binaries/yuque-exporter-core"
+    ],
+    "resources": [],
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "installMode": "currentUser"
+      }
+    }
+  }
+}

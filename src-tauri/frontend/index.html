@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>语雀导出</title>
+  <style>
+    /* Shown only until the local server responds and the window navigates away. */
+    html,body{height:100%;margin:0}
+    body{
+      display:grid;place-items:center;
+      background:#0f1115;color:#8b93a1;
+      font:14px/1.6 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+    }
+    .box{text-align:center}
+    .dot{width:6px;height:6px;border-radius:50%;background:#5b63e8;
+      display:inline-block;margin-right:8px;animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+  </style>
+</head>
+<body>
+  <div class="box"><span class="dot"></span>正在启动…</div>
+</body>
+</html>

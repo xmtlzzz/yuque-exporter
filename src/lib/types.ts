@@ -27,5 +27,7 @@ export interface TreeNode {
   namespace?: string;
   filePath?: string;
   content?: string;
+  extension?: string;
+  exportable?: boolean;
 }
 

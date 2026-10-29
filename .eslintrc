@@ -6,6 +6,6 @@
   "rules": {
     "no-else-return": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "eggache/no-only-tests": "off"
+    "eggache/no-only-tests": "error"
   }
 }

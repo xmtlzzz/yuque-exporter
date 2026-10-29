@@ -12,6 +12,7 @@
     "p-queue": "^7.3.0",
     "performant-array-to-tree": "^1.11.0",
     "remark": "^14.0.2",
+    "remark-gfm": "^3.0.1",
     "toml": "^4.1.1",
     "undici": "^5.12.0",
     "unist-util-inspect": "^7.0.1",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "@artus/tsconfig": "^1.0.1",
+    "@tauri-apps/cli": "^2.12.4",
     "@types/mdast": "^3.0.10",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.7",
@@ -34,14 +36,21 @@
   },
   "scripts": {
     "start": "npm run start:dev",
-    "start:prod": "node dist/main.js",
-    "start:dev": "tsx src/main.ts",
+    "start:prod": "node dist/run.js",
+    "start:dev": "tsx src/run.ts",
     "build": "tsc",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
-    "test": "mocha",
+    "test": "node --import tsx node_modules/mocha/bin/mocha.js --forbid-only",
     "cov": "c8 npm test",
-    "prepublishOnly": "rm -rf dist && npm run build"
+    "check-secrets": "node scripts/check-secrets.mjs",
+    "ui": "node dist/lib/web/server.js",
+    "ui:dev": "tsx src/lib/web/server.ts",
+    "ui:open": "node scripts/open-ui.mjs",
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run build",
+    "build:desktop": "node scripts/build-desktop.mjs --no-bundle",
+    "build:installer": "node scripts/build-desktop.mjs"
   },
   "files": [
     "dist",
@@ -55,5 +64,8 @@
   "publishConfig": {
     "access": "public"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.6.0"
+  }
 }

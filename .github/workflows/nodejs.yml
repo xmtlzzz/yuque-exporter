@@ -1,51 +1,38 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Node.js CI
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch: {}
 
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16]
-        os: [ubuntu-latest]
-
+        node-version: [20, 24]
+        os: [ubuntu-latest, windows-latest]
     steps:
-    - name: Checkout Git Source
-      uses: actions/checkout@v2
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Install Dependencies
-      run: npm i
-
-    - name: Run Lint
-      run: npm run lint
-
-    - name: Run Test
-      run: npm run cov
-
-    - name: Code Coverage
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Checkout Git Source
+        uses: actions/checkout@v7
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Lint
+        run: npm run lint
+      - name: Check for committed credentials
+        run: npm run check-secrets
+      - name: Build and Run Tests
+        run: npm run cov

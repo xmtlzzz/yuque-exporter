@@ -1,23 +1,22 @@
-# 语雀导出工具配置文件
-# 复制此文件为 config.toml 并填入你的配置
-
+# 复制为 config.toml；不要提交真实 token。
 [yuque]
-# 语雀 host，默认无需修改
 host = "https://www.yuque.com"
-
-# 语雀 token (可选，优先使用环境变量 YUQUE_TOKEN)
+# 优先使用环境变量 YUQUE_TOKEN；显式 --token 的优先级更高。
 # token = "your-token-here"
 
-# 输出目录
+# 相对路径以本 TOML 文件的所在目录为基准。
 outputDir = "./storage"
 
-# 是否清空输出目录
+# 强制重新抓取，不删除原有有效输出或缓存。
 clean = false
+concurrency = 4
+retries = 3
+retryDelay = 500
+# 每次请求超时，毫秒。
+timeout = 30000
+# 对缺失正文/原生富文本的已发布普通 Doc 尝试 YFM。
+preferYfm = true
 
-# 要导出的仓库列表
 [yuque.target]
-repos = [
-  "atian25/blog",
-  # 添加更多仓库，例如:
-  # "your-name/your-repo",
-]
+repos = []
+# 空数组表示导出 token 可见的全部 Book 知识库。

@@ -10,3 +10,10 @@ npm-debug.log
 storage
 dist
 config.toml
+# Local tooling state, not part of the package.
+.birdview/
+
+# Desktop build output
+src-tauri/target/
+src-tauri/binaries/
+src-tauri/gen/

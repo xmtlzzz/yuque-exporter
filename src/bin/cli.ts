@@ -1,74 +1,53 @@
 #!/usr/bin/env node
 
-// TODO: use yargs or artus-common-bin to refactor it
+// Marks this process as CLI-driven so importing main.js does not auto-start an
+// export (the guard in main.ts would otherwise fire when bundled).
+process.env.YUQUE_EXPORTER_CLI = '1';
 
 import { parseArgs } from 'util';
-import fs from 'fs/promises';
+import { start } from '../main.js';
+import { errorMessage, logger } from '../lib/utils.js';
+import { HELP_TEXT } from './help.js';
+import { VERSION } from './version.js';
 
-import { config } from '../config.js';
-import { build } from '../lib/builder.js';
-import { crawl } from '../lib/crawler.js';
-
-const options = {
-  token: {
-    type: 'string' as const,
-    description: 'yuque token',
-  },
-  host: {
-    type: 'string' as const,
-    description: 'yuque host',
-    default: 'https://www.yuque.com',
-  },
-  outputDir: {
-    type: 'string' as const,
-    description: 'output target directory',
-    default: './storage',
-  },
-  clean: {
-    type: 'boolean' as const,
-    description: 'Whether clean the output target directory',
-    default: false,
-  },
-  help: {
-    type: 'boolean' as const,
-    description: 'Show help',
-    short: 'h',
-  },
-};
-
-const argv = parseArgs({
-  options,
-  allowPositionals: true,
-  args: process.argv.slice(2),
-});
-
-if (argv.values.help) {
-  const content = await fs.readFile(new URL('./help.md', import.meta.url), 'utf-8');
-  console.log(content);
-  process.exit(0);
-}
-
-console.log(argv);
-
-// set config
-Object.assign(config, argv.values);
-
-// execute command
-const [ command, ...repos ] = argv.positionals;
-switch (command) {
-  case 'crawl': {
-    await crawl(repos);
-    break;
+try {
+  const argv = parseArgs({
+    options: {
+      token: { type: 'string' },
+      host: { type: 'string' },
+      outputDir: { type: 'string' },
+      config: { type: 'string' },
+      concurrency: { type: 'string' },
+      retries: { type: 'string' },
+      timeout: { type: 'string' },
+      clean: { type: 'boolean' },
+      version: { type: 'boolean', short: 'v' },
+      help: { type: 'boolean', short: 'h' },
+    },
+    allowPositionals: true,
+  });
+  if (argv.values.help) {
+    console.log(HELP_TEXT);
+  } else if (argv.values.version) {
+    console.log(VERSION);
+  } else {
+    const { config: configPath, help, version, concurrency, retries, timeout, ...values } = argv.values;
+    const [ command, ...remaining ] = argv.positionals;
+    const mode = command === 'crawl' || command === 'build' ? command : 'export';
+    const repos = mode === 'export' ? argv.positionals : remaining;
+    await start({
+      configPath,
+      repos,
+      mode,
+      options: {
+        ...values,
+        ...(concurrency !== undefined ? { concurrency: Number(concurrency) } : {}),
+        ...(retries !== undefined ? { retries: Number(retries) } : {}),
+        ...(timeout !== undefined ? { timeout: Number(timeout) } : {}),
+      },
+    });
   }
-
-  case 'build': {
-    await build();
-    break;
-  }
-
-  default: {
-    await crawl(argv.positionals);
-    await build();
-    break;
-  }
+} catch (error) {
+  logger.error(errorMessage(error));
+  process.exitCode = 1;
 }

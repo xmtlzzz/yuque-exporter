@@ -1,24 +1,30 @@
-yuque-exporter [...repos] [options]
+yuque-exporter [crawl|build] [owner/book ...] [options]
 
-export yuque docs to local
+Export Yuque documents and write export-report.json.
+Requires Node.js 20 or newer. Without targets, export all visible Book repositories.
 
-Usages:
-  yuque-exporter --token=<your_token>
-  yuque-exporter --token=<your_token> eggjs
-  yuque-exporter --token=<your_token> atian25/test atian25/blog
-  YUQUE_TOKEN=<your_token> yuque-exporter
+Examples:
+  yuque-exporter --config=config.toml
+  yuque-exporter owner/book --outputDir=./storage
+  yuque-exporter crawl owner/book
+  yuque-exporter build owner/book
 
-Commands:
-  yuque-exporter [...repos]     export yuque docs to local             [default]
-  yuque-exporter crawl          only crawl yuque docs meta
-  yuque-exporter build          only build yuque docs with meta
+Use YUQUE_TOKEN for authentication. Priority: explicit CLI option > environment > TOML.
+The build command and --help work without a token.
 
 Options:
-  --help       Show help                                               [boolean]
-  --version    Show version number                                     [boolean]
-  --token      yuque token                                             [string] [default: process.env.YUQUE_TOKEN]
-  --host       yuque host                                              [string] [default: "https://www.yuque.com"]
-  --outputDir  output target directory                                 [string] [default: "./storage"]
-  --clean      Whether clean the output target directory               [boolean] [default: false]
+  --help, -h       Show help
+  --config         TOML file (default: config.toml in current directory)
+  --token          Yuque token; prefer the YUQUE_TOKEN environment variable
+  --host           Yuque host (default: https://www.yuque.com)
+  --outputDir      Output directory; CLI paths are relative to current directory
+  --concurrency    Parallel document reads (default: 4)
+  --retries        Additional HTTP read attempts (default: 3, maximum: 10)
+  --timeout        Timeout per request in milliseconds (default: 30000)
+  --clean          Refetch every document; preserve existing files on failure
 
-See https://github.com/atian25/yuque-exporter for more detail.
+Markdown exports use .md. HTML/Lake and Sheet/Table data retain their original
+representations. Empty and uncreated documents are reported without 0-byte files.
+Failed or unsupported exports exit with code 1; inspect export-report.json.
+
+See https://github.com/xmtlzzz/yuque-exporter for details.

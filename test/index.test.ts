@@ -4,7 +4,7 @@ import { visit } from 'unist-util-visit';
 import { selectAll } from 'unist-util-select';
 import { remark } from 'remark';
 
-describe.only('test/index.test.js', () => {
+describe('tree traversal', () => {
   it('should work', async () => {
     const node = {
       value: 'root',
@@ -27,8 +27,6 @@ describe.only('test/index.test.js', () => {
       }
     }
 
-    for (const item of node) {
-      console.log(item.value);
-    }
+    assert.deepEqual([ ...node ].map(item => item.value), [ 'root', 'a', 'b', 'b1', 'b2', 'c' ]);
   });
 });

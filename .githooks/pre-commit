@@ -1,0 +1,3 @@
+#!/bin/sh
+# Block a Yuque token from being committed again; see scripts/check-secrets.mjs.
+exec node scripts/check-secrets.mjs
